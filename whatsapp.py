@@ -9,8 +9,8 @@ class WhatsappAnalyzer():
         import re
 
         date_regex = "^\[(.*)\]"
-        user_regex = "^\[.*\] (.*):"
-        msg_regex = "^\[.*\] .*: (.*)$"
+        user_regex = "^\[.*\] ([^:]*):"
+        msg_regex = "^\[.*\] [^:]*: (.*)$"
 
         with open(self.chat_file) as f:
             for line in f:
@@ -25,6 +25,13 @@ class WhatsappAnalyzer():
                 if msg_search:
                     msg = msg_search.group(1)
 
-                post = (date, user, msg)
-                print(post)
-                self.messages.append(post)
+                if date and user and msg:
+                    post = (date, user, msg)
+                    if user not in self.users:
+                        self.users.append(user)
+                    self.messages.append(post)
+
+    def message_count(self):
+        for user in self.users:
+            count = len([x for x in self.messages if x[1] == user])
+            print("%s: %d" % (user, count))
