@@ -2,7 +2,7 @@ class WhatsappAnalyzer():
 
     def __init__(self, chat_file):
         self.chat_file = chat_file
-        self.users = []
+        self.users = {}
         self.messages = []                
 
     def parse(self):
@@ -17,6 +17,7 @@ class WhatsappAnalyzer():
         msg_regex = "^\[.*\] [^:]*: (.*)$"
 
         with open(self.chat_file) as f:
+            user_count = 0
             for line in f:
                 # search for components
                 date_search = re.search(date_regex, line)
@@ -36,13 +37,14 @@ class WhatsappAnalyzer():
 
                 # if validly constructed message, save to object
                 if date and user and msg:
+                    if user not in self.users.values():
+                        self.users[user_count] = user
+                        user_count += 1
                     post = {
                         'date': date,
-                        'user': user,
+                        'user': [k for k,v in self.users.items() if v==user][0],
                         'message': msg
                     }
-                    if user not in self.users:
-                        self.users.append(user)
                     self.messages.append(post)
 
     def message_count(self):
@@ -51,20 +53,24 @@ class WhatsappAnalyzer():
         """
         for user in self.users:
             count = len([x for x in self.messages if x['user'] == user])
-            print("%s: %d" % (user, count))
+            print("%s: %d" % (self.users[user], count))
 
     def top_words(self, user, n):
         """
         Get top n most commonly used words for user
         """
-        # get list of words
-        all_msgs = " ".join([x['message'].lower() for x in self.messages if x['user'] == user])
-        tokens = all_msgs.split(' ')
+        if user in self.users.values():
+            user_key = [k for k,v in self.users.items() if v==user][0]
+            # get list of words
+            all_msgs = " ".join([x['message'].lower() for x in self.messages if x['user'] == user_key])
+            tokens = all_msgs.split(' ')
 
-        # filter stop words
-        from nltk.corpus import stopwords
-        tokens = [word for word in tokens if word not in stopwords.words('english') and word != '']
-        
-        # create term-frequency pairs
-        from collections import Counter
-        return Counter(tokens).most_common(n)
+            # filter stop words
+            from nltk.corpus import stopwords
+            tokens = [word for word in tokens if word not in stopwords.words('english') and word != '']
+            
+            # create term-frequency pairs
+            from collections import Counter
+            return Counter(tokens).most_common(n)
+        else:
+            return None
