@@ -47,6 +47,14 @@ class WhatsappAnalyzer():
                     }
                     self.messages.append(post)
 
+    def edit_user(self, user, new_name):
+        """
+        Edit the name of an existing user
+        """
+        if user in self.users.values():
+            user_key = [k for k,v in self.users.items() if v==user][0]
+            self.users[user_key] = new_name
+
     def message_count(self):
         """
         Calculate number of messages sent by each user
