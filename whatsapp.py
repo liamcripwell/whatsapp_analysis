@@ -59,7 +59,7 @@ class WhatsappAnalyzer():
 
         # filter stop words
         from nltk.corpus import stopwords
-        tokens = [word for word in tokens if word not in stopwords.words('english')]
+        tokens = [word for word in tokens if word not in stopwords.words('english') and word != '']
         
         # create term-frequency pairs
         from collections import Counter
