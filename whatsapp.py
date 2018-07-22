@@ -36,7 +36,11 @@ class WhatsappAnalyzer():
 
                 # if validly constructed message, save to object
                 if date and user and msg:
-                    post = (date, user, msg)
+                    post = {
+                        'date': date,
+                        'user': user,
+                        'message': msg
+                    }
                     if user not in self.users:
                         self.users.append(user)
                     self.messages.append(post)
@@ -46,7 +50,7 @@ class WhatsappAnalyzer():
         Calculate number of messages sent by each user
         """
         for user in self.users:
-            count = len([x for x in self.messages if x[1] == user])
+            count = len([x for x in self.messages if x['user'] == user])
             print("%s: %d" % (user, count))
 
     def top_words(self, user, n):
@@ -54,7 +58,7 @@ class WhatsappAnalyzer():
         Get top n most commonly used words for user
         """
         # get list of words
-        all_msgs = " ".join([x[2].lower() for x in self.messages if x[1] == user])
+        all_msgs = " ".join([x['message'].lower() for x in self.messages if x['user'] == user])
         tokens = all_msgs.split(' ')
 
         # filter stop words
