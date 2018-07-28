@@ -2,6 +2,7 @@ from collections import Counter
 from nltk.corpus import stopwords
 import string
 import re
+from dateutil import parser
 
 class WhatsappAnalyzer():
 
@@ -15,7 +16,7 @@ class WhatsappAnalyzer():
         Parse each line of chat_file and identify date, user and message content from each
         """
         # regex patters for finding each component
-        date_regex = "^\[(.*)\]"
+        date_regex = "^\[([^A-Za-z]*)\]"
         user_regex = "^\[.*\] ([^:]*):"
         msg_regex = "^\[.*\] [^:]*: (.*)$"
 
@@ -82,3 +83,10 @@ class WhatsappAnalyzer():
             return Counter(tokens).most_common(n)
         else:
             return None
+
+    def message_count_by_month(self):
+        """
+        Calculate number of messages sent during each month
+        """
+        message_months = [ parser.parse(msg['date']).month for msg in self.messages ]
+        return Counter(message_months)
