@@ -1,3 +1,8 @@
+from collections import Counter
+from nltk.corpus import stopwords
+import string
+import re
+
 class WhatsappAnalyzer():
 
     def __init__(self, chat_file):
@@ -9,8 +14,6 @@ class WhatsappAnalyzer():
         """
         Parse each line of chat_file and identify date, user and message content from each
         """
-        import re
-
         # regex patters for finding each component
         date_regex = "^\[(.*)\]"
         user_regex = "^\[.*\] ([^:]*):"
@@ -29,7 +32,6 @@ class WhatsappAnalyzer():
                     date = date_search.group(1)
                 if user_search:
                     user = user_search.group(1)
-                    import string
                     user = ''.join(ch for ch in user if ch.isalnum()).lower()
                 if msg_search:
                     msg = msg_search.group(1)
@@ -74,11 +76,9 @@ class WhatsappAnalyzer():
             tokens = all_msgs.split(' ')
 
             # filter stop words
-            from nltk.corpus import stopwords
             tokens = [word for word in tokens if word not in stopwords.words('english') and word != '']
             
             # create term-frequency pairs
-            from collections import Counter
             return Counter(tokens).most_common(n)
         else:
             return None
