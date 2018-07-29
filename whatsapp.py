@@ -4,12 +4,13 @@ import string
 import re
 from dateutil import parser
 
+
 class WhatsappAnalyzer():
 
     def __init__(self, chat_file):
         self.chat_file = chat_file
         self.users = {}
-        self.messages = []                
+        self.messages = []
 
     def parse(self):
         """
@@ -45,7 +46,7 @@ class WhatsappAnalyzer():
                         user_count += 1
                     post = {
                         'date': date,
-                        'user': [k for k,v in self.users.items() if v==user][0],
+                        'user': [k for k, v in self.users.items() if v == user][0],
                         'message': msg
                     }
                     self.messages.append(post)
@@ -55,7 +56,7 @@ class WhatsappAnalyzer():
         Edit the name of an existing user
         """
         if user in self.users.values():
-            user_key = [k for k,v in self.users.items() if v==user][0]
+            user_key = [k for k, v in self.users.items() if v == user][0]
             self.users[user_key] = new_name
 
     def message_count(self):
@@ -71,22 +72,25 @@ class WhatsappAnalyzer():
         Get top n most commonly used words for user
         """
         if user in self.users.values():
-            user_key = [k for k,v in self.users.items() if v==user][0]
+            user_key = [k for k, v in self.users.items() if v == user][0]
             # get list of words
-            all_msgs = " ".join([x['message'].lower() for x in self.messages if x['user'] == user_key])
+            all_msgs = " ".join([x['message'].lower()
+                                 for x in self.messages if x['user'] == user_key])
             tokens = all_msgs.split(' ')
 
             # filter stop words
-            tokens = [word for word in tokens if word not in stopwords.words('english') and word != '']
-            
+            tokens = [word for word in tokens if word not in stopwords.words(
+                'english') and word != '']
+
             # create term-frequency pairs
             return Counter(tokens).most_common(n)
         else:
             return None
 
-    def message_count_by_month(self):
+    def message_count_by_date(self):
         """
         Calculate number of messages sent during each month
         """
-        message_months = [ parser.parse(msg['date']).month for msg in self.messages ]
-        return Counter(message_months)
+        message_months = [parser.parse(msg['date']).date()
+                          for msg in self.messages]
+        return Counter(message_months).most_common()
