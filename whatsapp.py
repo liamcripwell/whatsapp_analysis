@@ -3,6 +3,9 @@ from nltk.corpus import stopwords
 import string
 import re
 from dateutil import parser
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 
 
 class WhatsappAnalyzer():
@@ -89,8 +92,14 @@ class WhatsappAnalyzer():
 
     def message_count_by_date(self):
         """
-        Calculate number of messages sent during each month
+        Calculate number of messages sent on each day
         """
-        message_months = [parser.parse(msg['date']).date()
+        message_months = [parser.parse(msg['date'], dayfirst=True).date()
                           for msg in self.messages]
         return Counter(message_months).most_common()
+
+    def bar_plot(self):
+        df = pd.DataFrame(self.message_count_by_date(), columns=["date", "count"])
+        df.date = df.date.astype("datetime64")
+        plot = sns.barplot(x="date", y="count", data=df)
+        plt.show()
