@@ -98,6 +98,14 @@ class WhatsappAnalyzer():
                           for msg in self.messages]
         return Counter(message_months).most_common()
 
+    def message_count_by_weekday(self):
+        """
+        Calculate number of messages sent cumulatively on each day of the week
+        """
+        messages = [parser.parse(msg['date'], dayfirst=True).weekday()
+                          for msg in self.messages]
+        return Counter(messages).most_common()
+
     def bar_plot(self):
         df = pd.DataFrame(self.message_count_by_date(), columns=["date", "count"])
         df.date = df.date.astype("datetime64")
