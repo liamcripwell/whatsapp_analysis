@@ -19,6 +19,8 @@ class WhatsappAnalyzer():
         """
         Parse each line of chat_file and identify date, user and message content from each
         """
+        print("Parsing chat log...")
+
         # regex patters for finding each component
         date_regex = "^\[([^A-Za-z]*)\]"
         user_regex = "^\[.*\] ([^:]*):"
@@ -53,6 +55,8 @@ class WhatsappAnalyzer():
                         'message': msg
                     }
                     self.messages.append(post)
+
+        print("Finished parsing chat log.")
 
     def edit_user(self, user, new_name):
         """
@@ -105,6 +109,12 @@ class WhatsappAnalyzer():
         messages = [parser.parse(msg['date'], dayfirst=True).weekday()
                           for msg in self.messages]
         return Counter(messages).most_common()
+
+    def plot_weekday(self):
+        message_counts = self.message_count_by_weekday()
+        df = pd.DataFrame(message_counts, columns=["day", "count"])
+        plot = sns.barplot(x="day", y="count", data=df)
+        plt.show()
 
     def bar_plot(self):
         df = pd.DataFrame(self.message_count_by_date(), columns=["date", "count"])
