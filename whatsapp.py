@@ -108,7 +108,9 @@ class WhatsappAnalyzer():
         """
         messages = [parser.parse(msg['date'], dayfirst=True).weekday()
                     for msg in self.messages]
-        return Counter(messages).most_common()
+        message_counts = Counter(messages).most_common()
+        df = pd.DataFrame(message_counts, columns=["day", "count"])
+        return df
 
     def message_average_by_weekday(self):
         """
@@ -123,8 +125,7 @@ class WhatsappAnalyzer():
         return df
 
     def plot_weekday(self):
-        message_counts = self.message_count_by_weekday()
-        df = pd.DataFrame(message_counts, columns=["day", "count"])
+        df = self.message_count_by_weekday()
         plot = sns.barplot(x="day", y="count", data=df)
         plt.show()
 
