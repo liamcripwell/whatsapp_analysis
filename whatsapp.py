@@ -107,8 +107,20 @@ class WhatsappAnalyzer():
         Calculate number of messages sent cumulatively on each day of the week
         """
         messages = [parser.parse(msg['date'], dayfirst=True).weekday()
-                          for msg in self.messages]
+                    for msg in self.messages]
         return Counter(messages).most_common()
+
+    def message_average_by_weekday(self):
+        """
+        Calculate average number of messages sent on each day of the week
+        """
+        by_date = self.message_count_by_date()
+        to_weekday = [(x[0].weekday(), x[1]) for x in by_date]
+
+        df = pd.DataFrame(to_weekday, columns=["day", "count"])
+        df = df.groupby(df.day).mean()
+
+        return df
 
     def plot_weekday(self):
         message_counts = self.message_count_by_weekday()
@@ -117,7 +129,8 @@ class WhatsappAnalyzer():
         plt.show()
 
     def bar_plot(self):
-        df = pd.DataFrame(self.message_count_by_date(), columns=["date", "count"])
+        df = pd.DataFrame(self.message_count_by_date(),
+                          columns=["date", "count"])
         df.date = df.date.astype("datetime64")
         plot = sns.barplot(x="date", y="count", data=df)
         plt.show()
