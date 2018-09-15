@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
+import topic_modelling
+
 
 class WhatsappAnalyzer():
 
@@ -135,3 +137,18 @@ class WhatsappAnalyzer():
         df.date = df.date.astype("datetime64")
         plot = sns.barplot(x="date", y="count", data=df)
         plt.show()
+
+    def fit_topic_model(self, num_topics=10):
+        """Fits a topic model 
+
+        Keyword Arguments:
+            num_topics {int} -- Number of topics to modelled (default: {10})
+        """
+
+        docs = [message['message'] for message in self.messages]
+
+        # TODO: incorporate spacy here so clean_docs() in topic_modelling can be used
+        #samples = [self.nlp(doc.strip()) for doc in docs]
+
+        # set object level topic model
+        self.topic_model = topic_modelling.LDAModel(docs, num_topics)
