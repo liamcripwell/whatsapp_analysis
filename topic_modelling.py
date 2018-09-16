@@ -17,7 +17,8 @@ class LDAModel:
 
     def __init__(self, training_samples, num_topics):
 
-        clean_samples = training_samples # TODO: self.clean_docs(training_samples)
+        # TODO: self.clean_docs(training_samples)
+        clean_samples = training_samples
 
         self.vectorizer = CountVectorizer(ngram_range=(1, 2),
                                           max_df=0.95, min_df=2,
@@ -37,32 +38,3 @@ class LDAModel:
         #print("\nTopics in LDA model:")
         tf_feature_names = self.vectorizer.get_feature_names()
         print_top_words(self.lda, tf_feature_names, 15)
-
-    def clean_docs(self, docs):
-        """
-        Remove stop words, punctuation, etc. and lemmatize words in docs
-        """
-        # clean docs
-        clean_docs = []
-        for doc in docs:
-            clean_doc = []
-            for t in doc:
-                if t.text != '\n' and not t.is_stop and not t.is_punct and not t.like_num:
-                    clean_doc.append(t.lemma_)
-            clean_docs.append(" ".join(clean_doc))
-
-        return clean_docs
-
-    def transform(self, item):
-        """
-        Transform given item in probability distribution across set topics
-        """
-        vec = self.vectorizer.transform(item)
-        return self.lda.transform(vec)
-
-    def visualise(self):
-        import pyLDAvis
-        import pyLDAvis.sklearn
-        pyLDAvis.enable_notebook()
-
-        pyLDAvis.sklearn.prepare(self.lda, self.tf, self.vectorizer)

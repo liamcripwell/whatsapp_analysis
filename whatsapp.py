@@ -144,11 +144,8 @@ class WhatsappAnalyzer():
         Keyword Arguments:
             num_topics {int} -- Number of topics to modelled (default: {10})
         """
-
         docs = [message['message'] for message in self.messages]
-
-        # TODO: incorporate spacy here so clean_docs() in topic_modelling can be used
-        #samples = [self.nlp(doc.strip()) for doc in docs]
 
         # set object level topic model
         self.topic_model = topic_modelling.LDAModel(docs, num_topics)
+        self.topic_model.visualise()
