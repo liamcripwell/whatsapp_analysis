@@ -38,3 +38,10 @@ class LDAModel:
         #print("\nTopics in LDA model:")
         tf_feature_names = self.vectorizer.get_feature_names()
         print_top_words(self.lda, tf_feature_names, 15)
+
+    def visualise(self):
+        import pyLDAvis
+        import pyLDAvis.sklearn
+        
+        data = pyLDAvis.sklearn.prepare(self.lda, self.tf, self.vectorizer)
+        pyLDAvis.show(data)

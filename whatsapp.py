@@ -148,4 +148,5 @@ class WhatsappAnalyzer():
 
         # set object level topic model
         self.topic_model = topic_modelling.LDAModel(docs, num_topics)
+        
         self.topic_model.visualise()
