@@ -13,18 +13,25 @@ def print_top_words(model, feature_names, n_top_words):
     print()
 
 
+def chunk(data, n):
+    return [data[x:x+n] for x in range(0, len(data), n)]
+
+
 class LDAModel:
 
-    def __init__(self, training_samples, num_topics):
+    def __init__(self, training_samples, num_topics, chunk_size=None):
 
-        # TODO: self.clean_docs(training_samples)
-        clean_samples = training_samples
+        # chunk training samples if required
+        if chunk_size:
+            chunks = chunk(training_samples, chunk_size)
+            clean_samples = [" ".join(chunk) for chunk in chunks]
+        else:
+            clean_samples = training_samples
 
         self.vectorizer = CountVectorizer(ngram_range=(1, 2),
                                           max_df=0.95, min_df=2,
                                           max_features=1000,
                                           stop_words='english')
-
         tf = self.vectorizer.fit_transform(clean_samples)
 
         self.lda = LatentDirichletAllocation(n_components=num_topics, max_iter=5,
@@ -42,6 +49,6 @@ class LDAModel:
     def visualise(self):
         import pyLDAvis
         import pyLDAvis.sklearn
-        
+
         data = pyLDAvis.sklearn.prepare(self.lda, self.tf, self.vectorizer)
         pyLDAvis.show(data)
