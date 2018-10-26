@@ -138,6 +138,21 @@ class WhatsappAnalyzer():
         plot = sns.barplot(x="date", y="count", data=df)
         plt.show()
 
+    def bokeh(self):
+        from bokeh.io import show
+        from bokeh.plotting import figure
+        from bokeh.models import ColumnDataSource
+
+        df = pd.DataFrame(self.message_count_by_date(),
+                          columns=["date", "count"])
+
+        source = ColumnDataSource(data=df)
+
+        p = figure()
+        p.circle(x='date', y='count', source=source)
+
+        show(p)
+
     def fit_topic_model(self, num_topics=10, chunk_size=None, visualise=False):
         """Fits a topic model 
 
