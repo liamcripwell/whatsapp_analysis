@@ -138,7 +138,7 @@ class WhatsappAnalyzer():
         plot = sns.barplot(x="date", y="count", data=df)
         plt.show()
 
-    def fit_topic_model(self, num_topics=10, chunk_size=None):
+    def fit_topic_model(self, num_topics=10, chunk_size=None, visualise=False):
         """Fits a topic model 
 
         Keyword Arguments:
@@ -150,4 +150,5 @@ class WhatsappAnalyzer():
         self.topic_model = topic_modelling.LDAModel(
             docs, num_topics, chunk_size=chunk_size)
 
-        self.topic_model.visualise()
+        if visualise:
+            self.topic_model.visualise()
