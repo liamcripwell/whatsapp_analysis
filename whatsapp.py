@@ -1,11 +1,9 @@
 import re
 import string
-from dateutil import parser
 from collections import Counter
 
+from dateutil import parser
 from nltk.corpus import stopwords
-import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
 
 import topic_modelling
@@ -126,33 +124,6 @@ class WhatsappAnalyzer():
         df = df.groupby(df.day).mean()
 
         return df
-
-    def plot_weekday(self):
-        df = self.message_count_by_weekday()
-        plot = sns.barplot(x="day", y="count", data=df)
-        plt.show()
-
-    def bar_plot(self):
-        df = pd.DataFrame(self.message_count_by_date(),
-                          columns=["date", "count"])
-        df.date = df.date.astype("datetime64")
-        plot = sns.barplot(x="date", y="count", data=df)
-        plt.show()
-
-    def bokeh(self):
-        from bokeh.io import show
-        from bokeh.plotting import figure
-        from bokeh.models import ColumnDataSource
-
-        df = pd.DataFrame(self.message_count_by_date(),
-                          columns=["date", "count"])
-
-        source = ColumnDataSource(data=df)
-
-        p = figure()
-        p.circle(x='date', y='count', source=source)
-
-        show(p)
 
     def fit_topic_model(self, num_topics=10, chunk_size=None, visualise=False):
         """Fits a topic model 
