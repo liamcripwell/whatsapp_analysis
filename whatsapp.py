@@ -3,6 +3,8 @@ import string
 from collections import Counter
 
 from dateutil import parser
+import nltk
+nltk.download('stopwords')
 from nltk.corpus import stopwords
 import pandas as pd
 
