@@ -77,12 +77,13 @@ class WhatsappAnalyzer():
             count = len([x for x in self.messages if x['user'] == user])
             print("%s: %d" % (self.users[user], count))
 
-    def top_words(self, user, n):
+    def top_words(self, user, n, metric='count'):
         """
         Get top n most commonly used words for user
         """
         if user in self.users.values():
             user_key = [k for k, v in self.users.items() if v == user][0]
+
             # get list of words
             all_msgs = " ".join([x['message'].lower()
                                  for x in self.messages if x['user'] == user_key])
@@ -92,8 +93,11 @@ class WhatsappAnalyzer():
             tokens = [word for word in tokens if word not in stopwords.words(
                 'english') and word != '']
 
-            # create term-frequency pairs
-            return Counter(tokens).most_common(n)
+            if metric == 'count':
+                # create term-frequency pairs
+                return Counter(tokens).most_common(n)
+            else:
+                return None
         else:
             return None
 
