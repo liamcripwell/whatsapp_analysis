@@ -99,6 +99,7 @@ class WhatsappAnalyzer():
             elif metric == 'idf':
                 idf_index = {}
 
+                # get unique terms and sort
                 tokens = list(set(tokens))
                 tokens.sort()
                 for token in tokens:
@@ -107,7 +108,7 @@ class WhatsappAnalyzer():
                     for message in [x['message'].lower().split(' ')
                                  for x in self.messages if x['user'] == user_key]:
                         if token in message:
-                            idf_index[token] += 1
+                            idf_index[token] += 1  
 
                 return idf_index
             else:
