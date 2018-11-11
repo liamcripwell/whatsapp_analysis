@@ -96,6 +96,20 @@ class WhatsappAnalyzer():
             if metric == 'count':
                 # create term-frequency pairs
                 return Counter(tokens).most_common(n)
+            elif metric == 'idf':
+                idf_index = {}
+
+                tokens = list(set(tokens))
+                tokens.sort()
+                for token in tokens:
+                    print(token)
+                    idf_index[token] = 0
+                    for message in [x['message'].lower().split(' ')
+                                 for x in self.messages if x['user'] == user_key]:
+                        if token in message:
+                            idf_index[token] += 1
+
+                return idf_index
             else:
                 return None
         else:
