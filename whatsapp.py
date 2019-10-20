@@ -1,6 +1,7 @@
 import re
 import string
 from collections import Counter
+import math
 
 from dateutil import parser
 import nltk
@@ -96,6 +97,28 @@ class WhatsappAnalyzer():
             if metric == 'count':
                 # create term-frequency pairs
                 return Counter(tokens).most_common(n)
+            elif metric == 'idf':
+                idf_index = {}
+
+                # get unique terms and sort
+                tokens = list(set(tokens))
+
+                messages = [x for x in self.messages if x['user'] == user_key]
+
+                # TODO: address the ridiculous complexity of this and do tf*idf
+                # compute document frequencies
+                for token in tokens[:1000]:
+                    idf_index[token] = 0
+                    for message in [x['message'].lower().split(' ') for x in messages]:
+                        if token in message:
+                            idf_index[token] += 1  
+
+                # compute inverses
+                N = len(messages)
+                for token, df in idf_index.items():
+                    idf_index[token] = math.log(N/df)
+
+                return idf_index
             else:
                 return None
         else:
